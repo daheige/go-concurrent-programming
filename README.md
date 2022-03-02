@@ -7,3 +7,5 @@ Concurrent programming in go language
     3.go Timer and Ticker
     4. go chan done
 
+# concurrency-in-go
+https://github.com/daheige/concurrency-in-go/
