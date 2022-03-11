@@ -126,7 +126,7 @@ func TestMutexRwlock(t *testing.T) {
 }
 
 func TestWaitGroup(t *testing.T) {
-	var wg = sync.WaitGroup{}
+	var wg sync.WaitGroup
 	wg.Add(3)
 	go func() {
 		defer wg.Done()
@@ -140,6 +140,18 @@ func TestWaitGroup(t *testing.T) {
 	// wg cannot be copied, if passed to a function,
 	// it needs to be passed by pointer
 	// fatal error: all goroutines are asleep - deadlock!
+	// 'func' passes lock by value: type 'sync.WaitGroup' contains 'interface{}' which is 'sync.Locker'
+	//
+	// The underlying source of WaitGroup
+	// type WaitGroup struct {
+	//    noCopy noCopy
+	//    state1 [3]uint32
+	// }
+	// A WaitGroup waits for a collection of goroutines to finish.
+	// The main goroutine calls Add to set the number of goroutines to wait for. Then each of the goroutines
+	// runs and calls Done when finished. At the same time, Wait can be used to block until
+	// all goroutines have finished.
+	// A WaitGroup must not be copied after first use.
 	go func(wg sync.WaitGroup) {
 		defer wg.Done()
 
@@ -153,7 +165,7 @@ func TestWaitGroup(t *testing.T) {
 }
 
 func TestWaitGroupNoCopy(t *testing.T) {
-	var wg = sync.WaitGroup{}
+	var wg sync.WaitGroup
 	wg.Add(3)
 	go func() {
 		defer wg.Done()
